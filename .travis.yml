@@ -12,6 +12,12 @@ env:
   - CHANGE_MINIKUBE_NONE_USER=true
   - KUBECONFIG=$HOME/.kube/config
 
+  matrix:
+  - TESTS=test/unit
+  - TESTS=test/e2e
+  - TESTS=test/e2e-local-image
+  - TESTS=test/goveralls
+
 before_install:
   - go get github.com/mattn/goveralls
   - go get github.com/modocache/gover
@@ -20,7 +26,7 @@ before_install:
   - make setup/travis
 
 # Since there's no persistence sharing, we need to run everything in a single stage
-install: make test/unit test/e2e test/goveralls NAMESPACE=default
+install: make $TESTS NAMESPACE=default
 
 after_failure:
   - echo "---- Keycloak Server logs ----"
